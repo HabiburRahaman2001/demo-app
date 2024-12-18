@@ -1,128 +1,98 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
+import DeemaSDK from 'react-native-deema-package'; // Adjust the path based on your file structure
 
-// Assuming the Deema SDK is installed and imported correctly
-import DeemaSDK from 'react-native-deema-sdk-beta'; // Replace with the correct import for your SDK
-console.log('DeemaSDK:', DeemaSDK);
 const App = () => {
-  const [merchantId, setMerchantId] = useState('1726');
+  const [environment, setEnvironment] = useState('production'); 
+  const [sdkKey, setSdkKey] = useState('sk_test_d5gntxxdoRNGkAweKjWZMr8iocXd3oNO1Wz5VJuW_65');
+  const [merchantOrderId, setMerchantOrderId] = useState('1726');
   const [amount, setAmount] = useState('100');
   const [currency, setCurrency] = useState('KWD');
-  const [sdkKey, setSdkKey] = useState('sk_test_d5gntxxdoRNGkAweKjWZMr8iocXd3oNO1Wz5VJuW_65');
-  const [isDeemaSdkOpen, setIsDeemaSdkOpen] = useState(false);
-
-  // Validate input fields before proceeding to open SDK
-  const validateInputs = () => {
-    if (!merchantId || !amount || !currency || !sdkKey) {
-      Alert.alert('Error', 'All fields must be filled.');
-      return false;
-    }
-    if (isNaN(amount) || Number(amount) <= 0) {
-      Alert.alert('Error', 'Amount should be a positive number.');
-      return false;
-    }
-    return true;
-  };
+  const [showSDK, setShowSDK] = useState(false);
 
   const handlePaymentStatus = (status, message) => {
-    if (status === 'success') {
-      console.log('Payment Successful');
-      Alert.alert('Payment Successful', 'Your payment has been processed successfully.');
-    } else if (status === 'failure') {
-      console.log(message);
-      Alert.alert('Payment Failed', message);
+    console.log(`Payment Status: ${status}`);
+    console.log(`Message: ${message}`);
+    setShowSDK(false); // Reset after payment
+  };
+
+  const handleSubmit = () => {
+    if (sdkKey && merchantOrderId && amount && currency) {
+      setShowSDK(true);
+    } else {
+      console.log('something wrong')
     }
-    setIsDeemaSdkOpen(false); // Close the SDK after payment status
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.overlay}>
-        {isDeemaSdkOpen ? (
-          <DeemaSDK
-            environment="sandbox" // Replace with correct environment if needed
-            merchantOrderId={merchantId}
-            sdkKey={sdkKey}
-            amount={amount}
-            currency={currency}
-            onPaymentStatus={handlePaymentStatus}
+      {/* <Text style={styles.title}>Payment App</Text> */}
+
+      {!showSDK ? (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="SDK Key"
+            value={sdkKey}
+            onChangeText={setSdkKey}
           />
-        ) : (
-          <View style={styles.formContainer}>
-            <Text style={styles.header}>I am on merchant app, to open the Deema SDK tap button</Text>
-            <TextInput
-              style={styles.input}
-              value={merchantId}
-              onChangeText={setMerchantId}
-              placeholder="Merchant ID"
-            />
-            <TextInput
-              style={styles.input}
-              value={amount}
-              onChangeText={setAmount}
-              placeholder="Amount"
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              value={sdkKey}
-              onChangeText={setSdkKey}
-              placeholder="SDK Key"
-            />
-            <TextInput
-              style={styles.input}
-              value={currency}
-              onChangeText={setCurrency}
-              placeholder="Currency"
-            />
-            <Button
-              title="Open Deema SDK"
-              onPress={() => {
-                if (validateInputs()) {
-                  setIsDeemaSdkOpen(true);
-                }
-              }}
-            />
-          </View>
-        )}
-      </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Merchant Order ID"
+            value={merchantOrderId}
+            onChangeText={setMerchantOrderId}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Amount"
+            value={amount}
+            onChangeText={setAmount}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Currency (e.g., USD)"
+            value={currency}
+            onChangeText={setCurrency}
+          />
+
+          <Button title="Proceed to Payment" onPress={handleSubmit} />
+        </>
+      ) : (
+        <DeemaSDK
+          sdkKey={sdkKey}
+          merchantOrderId={merchantOrderId}
+          amount={amount}
+          currencyCode={currency}
+          environment={environment}
+          onPaymentStatus={handlePaymentStatus}
+        />
+      )}
     </View>
   );
 };
 
+export default App;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  formContainer: {
     padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '80%',
   },
-  header: {
-    fontSize: 16,
-    marginBottom: 20,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
-    height: 40,
-    borderColor: '#ddd',
+    height: 50,
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10,
-    width: '100%',
-    borderRadius: 5,
+    borderRadius: 8,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    fontSize: 16,
   },
 });
-
-export default App;

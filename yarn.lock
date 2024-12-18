@@ -3529,6 +3529,7 @@ __metadata:
     prettier: 2.8.8
     react: 18.3.1
     react-native: 0.75.2
+    react-native-deema-package: ^1.0.0
     react-native-deema-sdk-beta: ^1.0.6
     react-native-webview: ^13.12.5
     react-test-renderer: 18.3.1
@@ -8826,6 +8827,16 @@ __metadata:
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 9d6d111d8990dc98bc5402c1266a808b0459b5d54830bbea24c12d908b536df7883f268a7868cfaedde3dd9d4e0d574db456f84d2e6df9c4526f99bb4b5344d8
+  languageName: node
+  linkType: hard
+
+"react-native-deema-package@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "react-native-deema-package@npm:1.0.0"
+  peerDependencies:
+    react: 18.3.1
+    react-native: 0.75.2
+  checksum: f971ff4158a82b069bb3031fdca975ac6c6b23e238e47ae2c044d5624b979b1ba4b293fbb1e143b5fdf20d73402df9b202bebc158d1b5ead4009f3fd3fde441c
   languageName: node
   linkType: hard
 
