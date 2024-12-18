@@ -13,8 +13,13 @@ const App = () => {
   const handlePaymentStatus = (status, message) => {
     console.log(`Payment Status: ${status}`);
     console.log(`Message: ${message}`);
+    if (status === 'failure') {
+      Alert.alert('Payment Failed', message);
+    }
+  
     setShowSDK(false); // Reset after payment
   };
+  
 
   const handleSubmit = () => {
     if (sdkKey && merchantOrderId && amount && currency) {
